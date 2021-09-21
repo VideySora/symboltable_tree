@@ -1,4 +1,7 @@
 INSERT x number
 INSERT y string
-ASSIGN x 15
-ASSIGN y 76
+BEGIN
+INSERT x number
+INSERT z number
+PRINT
+END

@@ -20,6 +20,8 @@ void SymbolTable::run(string filename)
     string command, var, val;
     fstream myfile(filename);
     int count;
+    int level = 0;
+
     // myfile.open(filename, ios::in);
     if (myfile.is_open())
     {
@@ -39,7 +41,7 @@ void SymbolTable::run(string filename)
                 {
                     var += Get_variable(s[i], count);
                 }
-                else if (count == 3)
+                else 
                 {
                     val += Get_variable(s[i], count);
                 }
@@ -48,15 +50,33 @@ void SymbolTable::run(string filename)
 
             if (command == "INSERT")
             {
-                this->INSERT(var, val, s);
+                this->INSERT(var, val, s, level);
             }
             else if (command == "ASSIGN")
             {
-                this->ASSIGN(var, val, s);
+                this->ASSIGN(var, val, s, level);
+            }else if (command == "BEGIN"){
+                level++;
+                this->INSERT_BEGIN("BEGIN", level);
+            }else if (command == "END"){
+                level--;
+            }else if(command == "LOOKUP"){
+                this->LOOKUP(var, s, level);
+            }else if(command == "PRINT"){
+                this->PRINT(level);
+            }else if(command == "RPRINT"){
+                this->RPRINT(level);
             }
 
+            if(command == "INSERT" || command =="ASSIGN"){
             cout << "success" << endl;
+            }
         }
         myfile.close();
+    }
+
+    if(level != 0){
+        UnclosedBlock e(level);
+        throw e;
     }
 }
